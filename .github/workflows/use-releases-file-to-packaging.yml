@@ -12,7 +12,7 @@ on:
       source_branch:
         description: "Select the source branch"
         required: false
-        default: "immortalwrt"
+        default: "lede"
         type: choice
         options:
           - official
@@ -21,7 +21,7 @@ on:
       openwrt_board:
         description: "Select device board"
         required: false
-        default: "dg3399"
+        default: "sv-33a6x"
         type: choice
         options:
           - dg3399
@@ -77,12 +77,13 @@ on:
       builder_name:
         description: "Set OpenWrt builder signature."
         required: false
-        default: "ophub"
+        default: "sign"
         type: choice
         options:
           - ophub
           - angel
           - NateF
+          - sign
 
 env:
   TZ: America/New_York
@@ -162,7 +163,7 @@ jobs:
           armvirt_tarfile_path="openwrt/output"
           [[ -d "${armvirt_tarfile_path}" ]] || mkdir -p ${armvirt_tarfile_path}
           ln -sf /builder/openwrt ${GITHUB_WORKSPACE}/openwrt
-          ln -sf /builder/openwrt /home/runner/work/_actions/wf-nb/build-openwrt/main/openwrt
+          ln -sf /builder/openwrt /home/runner/work/_actions/pingdongyi/build-openwrt/main/openwrt
 
           latest_version=$(curl -s \
                 -H "Accept: application/vnd.github+json" \
@@ -193,7 +194,7 @@ jobs:
 
       - name: Packaging OpenWrt
         if: ${{ steps.down.outputs.status }} == 'success' && !cancelled()
-        uses: wf-nb/build-openwrt@main
+        uses: pingdongyi/build-openwrt@main
         with:
           openwrt_path: openwrt/output/*rootfs.tar.gz
           openwrt_board: ${{ inputs.openwrt_board }}

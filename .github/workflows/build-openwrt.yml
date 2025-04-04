@@ -21,7 +21,7 @@ on:
       openwrt_board:
         description: "Select device board"
         required: false
-        default: "dg3399"
+        default: "sv-33a6x"
         type: choice
         options:
           - dg3399
@@ -77,12 +77,13 @@ on:
       builder_name:
         description: "Set OpenWrt builder signature."
         required: false
-        default: "NateF"
+        default: "sign"
         type: choice
         options:
           - ophub
           - angel
           - NateF
+          - sign
 
 env:
   FEEDS_CONF: config/${{ inputs.source_branch }}/feeds.conf.default
@@ -166,7 +167,7 @@ jobs:
           # Clone source code
           git clone -q --single-branch --depth=1 --branch=${REPO_BRANCH} ${REPO_URL} openwrt
           ln -sf /builder/openwrt ${GITHUB_WORKSPACE}/openwrt
-          ln -sf /builder/openwrt /home/runner/work/_actions/wf-nb/build-openwrt/main/openwrt
+          ln -sf /builder/openwrt /home/runner/work/_actions/pingdongyi/build-openwrt/main/openwrt
 
           # Set output information
           echo "build_tag=OpenWrt_${TAGS_NAME}_${{ inputs.openwrt_storage }}_$(date +"%Y.%m")" >> ${GITHUB_OUTPUT}
@@ -246,7 +247,7 @@ jobs:
 
       - name: Packaging OpenWrt
         if: ${{ steps.clean.outputs.status }} == 'success' && !cancelled()
-        uses: wf-nb/build-openwrt@main
+        uses: pingdongyi/amlogic-s9xxx-openwrt@main
         with:
           openwrt_path: openwrt/output/*rootfs.tar.gz
           openwrt_board: ${{ inputs.openwrt_board }}
